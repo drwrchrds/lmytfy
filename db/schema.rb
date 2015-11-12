@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151112080107) do
+ActiveRecord::Schema.define(version: 20151112211439) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20151112080107) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "links", ["find_desc", "loc"], name: "index_links_on_find_desc_and_loc", using: :btree
+  add_index "links", ["find_desc", "loc"], name: "index_links_on_find_desc_and_loc", unique: true, using: :btree
+  add_index "links", ["slug"], name: "index_links_on_slug", unique: true, using: :btree
 
 end

@@ -14,3 +14,22 @@
  *= require_tree .
  *= require_self
  */
+
+
+.content {
+	width: 900px;
+	margin: 0 auto;
+}
+
+.section {
+	padding: 10px;
+}
+
+.readonly-input {
+	cursor: text;
+	width: 200px;
+}
+
+.go-button {
+	display:none;
+}

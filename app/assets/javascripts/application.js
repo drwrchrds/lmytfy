@@ -17,14 +17,46 @@
 
 var yelpit = {};
 
-yelpit.linkShortener = function($formEl, $showUrlEl) {
+yelpit.linkShortener = function($formEl, $showShortUrl, $goButton, createUrl) {
 	this.$formEl = $formEl;
-	this.$showUrlEl = $showUrlEl;
-	
-	
-	
-}
+	this.$showShortUrl = $showShortUrl;
+	this.$goButton = $goButton;
+	this.createUrl = createUrl;
 
-yelpit.linkShortener.init = function($formEl, $showUrlEl) {
-	new yelpit.linkShortener($formEl, $showUrlEl);
-}
+	this.$formEl.on('submit', this.submitForm.bind(this));
+	this.$showShortUrl.on('change', function(e) {
+		e.preventDefault();
+	})
+};
+
+yelpit.linkShortener.prototype.submitForm = function(event) {
+	event.preventDefault();
+	var data = this.$formEl.serialize();
+
+	$.ajax({
+		url: this.createUrl,
+		data: data,
+		method: 'POST',
+		dataType: 'json'
+	}).done(
+		this.handleAjaxDone.bind(this)
+	).fail(
+		this.handleAjaxFail.bind(this)
+	);
+};
+
+yelpit.linkShortener.prototype.handleAjaxFail = function(response) {
+	console.log('fail');
+	console.log(response);
+};
+
+yelpit.linkShortener.prototype.handleAjaxDone = function(response) {
+	this.$showShortUrl.val(response.short_url)
+	this.$showShortUrl.attr('disabled', false);
+	this.$goButton.attr('href', response.short_url);
+	this.$goButton.show();
+};
+
+yelpit.linkShortener.init = function($formEl, $showShortUrl, $goButton) {
+	new yelpit.linkShortener($formEl, $showShortUrl, $goButton, '/create');
+};

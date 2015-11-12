@@ -8,6 +8,6 @@ class Link < ActiveRecord::Migration
       t.timestamps null: false
     end
     
-    add_index :links, [:find_desc, :loc]
+    add_index :links, [:find_desc, :loc], unique: true
   end
 end

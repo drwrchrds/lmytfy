@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  root to: 'static_pages#root'
+  root to: 'links#new'
   
-  post 'create' => 'static_pages#create_link'
+  post 'create' => 'links#create'
   
-  get '/:slug' => 'static_pages#show_link'
+  get '/:slug' => 'links#show'
 end
