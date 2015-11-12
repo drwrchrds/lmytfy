@@ -15,6 +15,7 @@
 //= require bootstrap.min
 //= require_tree .
 
+
 var yelpit = {};
 
 yelpit.linkShortener = function($formEl, $showShortUrl, $goButton, createUrl) {
@@ -60,3 +61,5 @@ yelpit.linkShortener.prototype.handleAjaxDone = function(response) {
 yelpit.linkShortener.init = function($formEl, $showShortUrl, $goButton) {
 	new yelpit.linkShortener($formEl, $showShortUrl, $goButton, '/create');
 };
+
+// TODO add JS modules in this file :)

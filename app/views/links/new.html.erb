@@ -1,0 +1,48 @@
+
+<%# TODO @fzz this is the new url page :) %>
+
+<div class="content">
+	<div class="section section--alert">
+		<% if flash[:error] %>
+			<div class="alert alert-warning">
+				<%= flash[:error] %>
+			</div>
+		<% end %>
+	</div>
+
+	<div class="section">
+		<form id='shortUrlForm' class="">
+			<label>Find
+				<input type="text" name="find_desc" placeholder="tacos, cheap dinner, Max's">
+			</label>
+			
+			<label>Near
+				<input type="text" name="loc" placeholder="San Francisco">
+			</label>
+			<button class="btn">Submit</button>
+		</form>
+	</div>
+
+	<div class="section">
+		<label>your short url:
+			<input 
+				id='showShortUrl' 
+				disabled="disabled" 
+				readonly="true" 
+				onClick="this.select()" 
+				class="readonly-input"
+			>
+		</label>
+		<a id="goButton" class="go-button btn btn-primary" href="#">Go!</a>
+	</div>
+</div>
+
+
+<script>
+	$(function() {
+		var $shortUrlForm = $(shortUrlForm);
+		var $showShortUrl = $(showShortUrl);
+		var $goButton = $(goButton);
+		yelpit.linkShortener.init($shortUrlForm, $showShortUrl, $goButton);
+	});
+</script>
