@@ -24,22 +24,23 @@
 				</span>
 				<span>
 					<label>Near:
-						<input type="text" name="loc" class="search-field-right">
+						<input type="text" name="loc" class="search-field-right" value="San Francisco">
 					</label>
 				</span>
 			</div>
-			<button class="btn yelp-button">Yelp it</button>
+			<button class="btn yelp-button">Yelp It</button>
 		</form>
 	</div>
 	<div class="section show-short-url" id="shortURLSection">
-		<label>Here is your link:
+		<label>Here is your link: &nbsp;
 			<input 
 				id='showShortUrl' 
 				readonly="readonly" 
 				onClick="this.select()"
+				type="text"
 			>
 		</label>
-		<a id="goButton" class="go-button btn btn-primary yelp-button" href="#">Go!</a>
+		<a id="goButton" class="go-button btn btn-link" target="_blank" href="#">Preview</a>
 	</div>
 
 	<div id= "quote-element" class="quote">
