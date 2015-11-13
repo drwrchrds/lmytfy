@@ -1,0 +1,43 @@
+
+#search_item{
+    width:160px;
+    height:13px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    background-color: transparent;
+    border: none;
+}
+
+#loc_item {
+    width:160px;
+    height:13px;
+    position: absolute;
+    left:450px;
+    top: 9px;
+    background-color: transparent;
+    border: none;
+}
+
+.cursor {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 650px;
+    top: 420px;
+}
+
+#background {
+    position:absolute;
+    top:0px;
+    left:0px;
+    bottom: 0;
+    right: 0;
+    background-size: cover;
+    background-position: center top;
+}
+
+#yelp_image {
+    width:100%;
+    position:absolute;
+}
