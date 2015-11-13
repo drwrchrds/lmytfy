@@ -10,8 +10,8 @@
 -->
 <div id='background' style="background-image: url(<%= asset_url 'empty_home.png' %>);">
     <div style="height:100%">
-        <input id="search_item">
-        <input id="loc_item">
+        <input id="find_desc">
+        <input id="find_loc">
         <div id="mouse" class="cursor">
             <img 
                 src="http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030" 
@@ -23,166 +23,220 @@
 </div>
 
 <script type='text/javascript'>
-    function getBackgroundSize() {
-        var $background = $(background);
-        return [$background.width(), $background.height()];
+	var redirectUrl = "<%= @link.redirect_url.to_s.html_safe %>";
+	var findDesc = "<%= @link.find_desc %>";
+	var findLoc = "<%= @link.loc %>";
+	var searchTerms = [findDesc, findLoc];
+
+	var $mouse = $('#mouse');
+
+    function getViewportSize() {
+        var $viewport = $(background);
+        return [$viewport.width(), $viewport.height()];
     }
 
     function animateClick() {
         var image = document.getElementById('mouse_image');
         image.src = "https://cdn0.iconfinder.com/data/icons/rcons-basic/16/cursor-512.png";
-        console.log("<%= @link.redirect_url.to_s.html_safe %>");
 
         setTimeout(function() {
             image.src = "http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030";
             setTimeout(function() {
-                // window.location = "<%= @link.redirect_url.to_s.html_safe %>"
+                // window.location = redirectUrl;
             }, 100);
         }, 200);
     }
 
-    function moveMouseHorizontal(xDelta, wait, elements) {
+    function moveMouseHorizontal(deltaX, interval, onFinish) {
+    	var pixelsPerStep = 2;
+    	var steps = Math.abs(deltaX) / pixelsPerStep;
         var mouseEl = document.getElementById('mouse');
-        var leftright = function () {
-            var x = parseInt(getComputedStyle(mouseEl).left);
-            if (xDelta < 0) {
-                --x;
-                --x;
-            } else if (xDelta > 0) {
-                ++x;
-                ++x;
+
+        var getNextPosition = function () {
+            var x = parseInt(mouseEl.style.left);
+
+            if (deltaX < 0) {
+            	x -= pixelsPerStep;
+            } else if (deltaX > 0) {
+            	x += pixelsPerStep;
             }
             
             return x;
         };
 
-        var moveLots = function (i) {
-            mouseEl.style.left = leftright() + "px";
-            if (i < xDelta / 2) {
+        var step = function (i) { // was moveLots
+            mouseEl.style.left = cssPixels(getNextPosition());
+            if (i < steps) {
                 setTimeout(function() {
-                    moveLots(i + 1);
-                }, wait);
+                    step(i + 1);
+                }, interval);
             } else {
-                console.log('done moving mouse')
+                console.log('done moving mouse');
+                setTimeout(onFinish, 300);
+            }
+        };
+        step(0);
+    };
+
+    function moveMouseVertical(distanceY, interval, onFinish) {
+    	var pixelsPerStep = 2;
+    	var steps = Math.abs(distanceY) / pixelsPerStep;
+        var mouseEl = document.getElementById('mouse');
+
+        var getNextPosition = function () {
+            var y = parseInt(mouseEl.style.top);
+            if (distanceY < 0) {
+            	y -= pixelsPerStep;
+            } else {
+            	y += pixelsPerStep;
+            }
+            return y;
+        };
+
+        var step = function (i) { // was moveLots
+            mouseEl.style.top = cssPixels(getNextPosition());
+            if (i < steps) {
                 setTimeout(function() {
-                    animateClick();
-                }, 300);
+                    step(i + 1);
+                }, interval);
+            } else {
+                console.log('done moving mouse');
+                setTimeout(onFinish, 500);
             }
         }
-        moveLots(0);
+        
+        step(0);
     }
 
-    function typeSearch(elements, terms, restEle, restT) {
+    function animateTyping(elements, terms) {
         console.log('typing search');
-        var el = restEle[0];
-        var term = restT[0];
-        var searchItem = document.getElementById(el);
+
+        var inputEl = elements.shift()
+        var term = terms.shift();
 
         function type(string, element) {
-            (function writer(i) {
+            function writer(i) {
+
 				if(string.length <= i++) {
 	                element.value = string;
-	                if (restEle.length > 1) {
-	                    var remainEle = restEle.slice(1, restEle.length);
-	                    var remainT = restT.slice(1, restT.length);
+
+	                if (elements.length) {
 	                    setTimeout(function() {
-	                        typeSearch(elements, terms, remainEle, remainT);
+	                        animateTyping(elements, terms);
 	                    }, 500);
 	                } else {
-	                    var backgroundSize = getBackgroundSize();
+	                    var backgroundSize = getViewportSize();
 	                    var desiredMouseDest = .815;
 
 	                    var mouseItem = document.getElementById('mouse');
 	                    var mouseX = mouseItem.getBoundingClientRect().left;
 	                    var desiredX = backgroundSize[0] * desiredMouseDest;
+	                    var amountToMove = Math.round(desiredX - mouseX);
 
-	                    amountToMove = Math.round(desiredX - mouseX)
-
-	                    moveMouseHorizontal(amountToMove, 1, elements, terms)
+	                    moveMouseHorizontal(amountToMove, 1, animateClick);
 	                }
-	                searchItem.blur()
+	                searchItem.blur();
 	                return
 				}
-				element.value = string.substring(0, i);
+
+				element.value = string.substring(0, i); // set element value
 				if (element.value[element.value.length - 1] != " ") element.focus();
+
 				setTimeout(function(){ 
 					writer(i); 
 				}, 100);
-            })(0)
-        }
-        type(term, searchItem)
-    }
+            };
 
-    function moveVertical(amount, elements, terms) {
-        var mouseEl = document.getElementById('mouse');
-
-        var updown = function () {
-            var y = parseInt(getComputedStyle(mouseEl).top);
-            if (amount < 0) {
-                --y;
-                --y;
-            } else {
-                ++y;
-                ++y;
-            }
-            return y;
+            writer(0);
         };
+        type(term, inputEl);
+    };
 
-        var moveLots = function (i) {
-            mouseEl.style.top = updown() + "px";
-            if (i < Math.abs(amount)/2.0) {
-                setTimeout(function() {
-                    moveLots(i + 1);
-                }, 3)   
-            } else {
-                console.log('done moving mouse')
-                setTimeout(function() {
-                    typeSearch(elements, terms, elements, terms);
-                }, 500);
-            }
-        }
-        
-        moveLots(0);
+    function cssPixels(number) {
+    	return number + 'px';
     }
 
     $(function() {
         console.log( "ready!" );
-        var elements = ['search_item', 'loc_item'];
-        var terms = ["<%= @link.find_desc %>", "<%= @link.loc %>"];
  
-        var backgroundSize = getBackgroundSize();
-        var searchItemX = .26;
-        var searchItemY = .022;
-        var searchItemWidth = .23;
+        var viewportSize = getViewportSize();
+        var viewportWidth = viewportSize[0];
+        var viewportHeight = viewportSize[1];
+        var viewportRatio = viewportWidth / viewportHeight;
+
+        var imageFullWidth = 2666;
+        var imageFullHeight = 1540;
+        var imageRatio = imageFullWidth / imageFullHeight;
+
+        // percentages correspond to positions of elements on background image
+        var inputTrueHeight = 0.03;
+        var inputTrueTop = 0.02;
+        var descriptionInputTrueLeft = 0.26;
+        var searchInputTrueLeft = 0.55;
+        var inputTrueWidth = 0.25;
+
+        var renderedImageHeight,
+            renderedImageWidth,
+            locationInputLeft,
+            descriptionInputLeft;
+        if (viewportRatio > imageRatio) {
+        	// page is too wide, image is cut off at the bottom
+        	// => we can base left-right movement off of screen width %
+        	// => we can base top-bottom movement off of top of screen % 
+        	renderedImageWidth = viewportWidth;
+        	renderedImageHeight = (viewportWidth / imageFullWidth) * imageFullHeight;
+
+        	var descriptionInputLeft = cssPixels(descriptionInputTrueLeft * renderedImageWidth);
+        	var locationInputLeft = cssPixels(searchInputTrueLeft * renderedImageWidth);
+        } else {
+         	// page is too skinny, image is cut off at the sides
+        	// => we can base left-right movement off of image width %
+        	// => derive correct image width from image height       	renderedImageHeight = viewportHeight;
+        	renderedImageWidth = (viewportHeight / imageFullHeight) * imageFullWidth;
+        	renderedImageHeight = viewportHeight;
+
+        	var lengthOfHiddenImageMargin = (renderedImageWidth - viewportWidth) / 2;
+
+        	var descriptionInputLeft = cssPixels(
+        		(renderedImageWidth * descriptionInputTrueLeft) - lengthOfHiddenImageMargin
+        	);
+        	var locationInputLeft = cssPixels(
+        		renderedImageWidth * locationInputTrueLeft - lengthOfHiddenImageMargin
+        	);
+        }
+
+    	var inputWidth = cssPixels(inputTrueWidth * renderedImageWidth);
+     	var inputTop = cssPixels(inputTrueTop * renderedImageHeight);
+    	var inputHeight = cssPixels(inputTrueHeight * renderedImageHeight);
+
+        var searchItem = document.getElementById('find_desc');
+        searchItem.style.left = descriptionInputLeft;
+        searchItem.style.top = inputTop
+        searchItem.style.width = inputWidth;
+        searchItem.style.height = inputHeight;
  
-        searchItem = document.getElementById('search_item');
-        searchItem.style.left = Math.round(searchItemX * backgroundSize[0]) + "px";
-        searchItem.style.top = Math.round(searchItemY * backgroundSize[1]) + "px";
-        searchItem.style.width = Math.round(searchItemWidth * backgroundSize[0]) + "px";
-        searchItem.style.height = '25px';
- 
-        var locItemX = .55;
-        var locItemY = .022;
-        var locItemWidth = .23;
- 
-        locItem = document.getElementById('loc_item');
-        locItem.style.left = Math.round(locItemX * backgroundSize[0]) + "px";
-        locItem.style.top = Math.round(locItemY * backgroundSize[1]) + "px";
-        locItem.style.width = Math.round(locItemWidth * backgroundSize[0]) + "px";
-        locItem.style.height = '25px';
+        var locItem = document.getElementById('find_loc');
+        locItem.style.left = locationInputLeft;
+        locItem.style.top = inputTop
+        locItem.style.width = inputWidth;
+        locItem.style.height = inputHeight;
  
         var mouseItemY = .8;
  
-        mouseItem = document.getElementById('mouse');
-        mouseItem.style.left = Math.round(searchItemX * backgroundSize[0]) + "px";
-        mouseItem.style.top = Math.round(mouseItemY * backgroundSize[1]) + "px";
+        var mouseItem = document.getElementById('mouse');
+        mouseItem.style.left = descriptionInputLeft;
+        mouseItem.style.top = cssPixels(Math.round(mouseItemY * viewportHeight));
  
-        var mouseUpPx = Math.round(
-            (mouseItemY * backgroundSize[1]) - (searchItemY * backgroundSize[1])
+        var distanceY = Math.round(
+            (mouseItemY * viewportHeight) - (inputTrueTop * viewportHeight)
         ) * .96;
- 
+ 		var verticalStepInterval = 1;
+ 		var inputElements = [searchItem, locItem];
+
         setTimeout(function() {
-            moveVertical(-mouseUpPx, elements, terms);
+            moveMouseVertical(-distanceY, verticalStepInterval, function onFinishMovingMouseVertical() {
+                animateTyping(inputElements, searchTerms);
+            });
         }, 1000);
     });
 </script>

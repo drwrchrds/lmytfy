@@ -1,22 +1,7 @@
 
-#search_item{
-    width:160px;
-    height:13px;
+#find_desc,
+#find_loc {
     position: absolute;
-    left: 0px;
-    top: 0px;
-    background-color: transparent;
-    border: none;
-}
-
-#loc_item {
-    width:160px;
-    height:13px;
-    position: absolute;
-    left:450px;
-    top: 9px;
-    background-color: transparent;
-    border: none;
 }
 
 .cursor {
@@ -35,9 +20,4 @@
     right: 0;
     background-size: cover;
     background-position: center top;
-}
-
-#yelp_image {
-    width:100%;
-    position:absolute;
 }
