@@ -95,6 +95,18 @@
 	margin-left: -200px;
 }
 
+.quote h2{
+	position: absolute;
+	bottom: 230px;
+	width: 400px;
+	z-index: -1;
+	left: 50%;
+	margin-left: -100px;
+	color: #555; 
+    font: bold 24px/45px Helvetica, Sans-Serif; 
+    letter-spacing: -1px;
+}
+
 .darwin-bottom-image {
 	position: absolute;
 	width: 240px;
