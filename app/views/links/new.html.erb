@@ -44,10 +44,11 @@
 
 	<div id= "quote-element" class="quote">
 		<img 
-			src="<%= asset_path 'quotes2.png'%>" 
+			src="<%= asset_path 'quotes.png'%>" 
 			alt="quote" 
 			class="quote-bottom-image"
 		>
+		<h2 id="text-h2">test</h2>
 	</div>	
 	<div class="darwin">
 		<img src="<%= asset_path 'darwin_create.png'%>" alt="darwin" class="darwin-bottom-image">
@@ -66,19 +67,17 @@
 </script>
 
 <script type="text/javascript">
-     var images = [
-	    "<%= asset_path 'quotes.png'%>", 
- 	    "<%= asset_path 'quotes2.png'%>"
+     var quotes = [
+	    "this is nother test", 
+ 	    "yet another 1"
      ];
 
     $(function() {
-    	var quoteImg = $('.quote-bottom-image');
+    	var quoteH2Element = document.getElementById("text-h2");
     	var interval = setInterval(function() {
-    		var nextImage = images.shift();
-
-    		quoteImg.attr('src', nextImage);
-
-    		images.push(nextImage);
+    		var newQuote = quotes.shift();
+    		quoteH2Element.innerHTML = newQuote;
+    		quotes.push(newQuote);
     	}, 1000);
     });
 </script>
