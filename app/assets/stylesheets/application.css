@@ -83,15 +83,13 @@
 
 .show-short-url {
 	display: none;
-	margin: 0 auto;
-	width: 400px;	
+	margin: 0 auto;	
 }
 
 .quote-bottom-image {
 	position: absolute;
-	bottom: 0;
-	margin-bottom: 250px;
-	width:400;
+	bottom: 230px;
+	width: 400px;
 	z-index: -1;
 	left: 50%;
 	margin-left: -200px;
