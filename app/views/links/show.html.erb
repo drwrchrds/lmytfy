@@ -125,12 +125,37 @@
 	                        animateTyping(elements, terms);
 	                    }, 500);
 	                } else {
-	                    var backgroundSize = getViewportSize();
 	                    var desiredMouseDest = .815;
+                        var viewportSize = getViewportSize();
+                        var viewportWidth = viewportSize[0];
+                        var viewportHeight = viewportSize[1];
+                        var viewportRatio = viewportWidth / viewportHeight;
+
+                        var imageFullWidth = 2666;
+                        var imageFullHeight = 1540;
+                        var imageRatio = imageFullWidth / imageFullHeight;
+
+                        var renderedImageWidth, desiredX;
+                        if (viewportRatio > imageRatio) {
+                            // page is too wide, image is cut off at the bottom
+                            // => we can base left-right movement off of screen width %
+                            // => we can base top-bottom movement off of top of screen % 
+                            renderedImageWidth = viewportWidth;
+
+                            desiredX = desiredMouseDest * renderedImageWidth;
+                        } else {
+                            // page is too skinny, image is cut off at the sides
+                            // => we can base left-right movement off of image width %
+                            // => derive correct image width from image height          renderedImageHeight = viewportHeight;
+                            renderedImageWidth = (viewportHeight / imageFullHeight) * imageFullWidth;
+
+                            var lengthOfHiddenImageMargin = (renderedImageWidth - viewportWidth) / 2;
+
+                            desiredX = (renderedImageWidth * desiredMouseDest) - lengthOfHiddenImageMargin;
+                        }
 
 	                    var mouseItem = document.getElementById('mouse');
 	                    var mouseX = mouseItem.getBoundingClientRect().left;
-	                    var desiredX = backgroundSize[0] * desiredMouseDest;
 	                    var amountToMove = Math.round(desiredX - mouseX);
 
 	                    moveMouseHorizontal(amountToMove, 1, animateClick);
