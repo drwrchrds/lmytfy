@@ -6,6 +6,15 @@
     border: none;
 }
 
+#instructions {
+    position: absolute;
+    background-color: transparent;
+    border: none;
+    font-size: 21px;
+    color: #c41200;
+    font-weight: bold;
+}
+
 .cursor {
     width: 20px;
     height: 20px;

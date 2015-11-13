@@ -12,6 +12,7 @@
     <div style="height:100%">
         <input id="find_desc">
         <input id="find_loc">
+        <textarea id="instructions"></textarea>
         <div id="mouse" class="cursor">
             <img 
                 src="http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030" 
@@ -41,9 +42,10 @@
 
         setTimeout(function() {
             image.src = "http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030";
+            document.getElementById('instructions').value = "Oh man, that was so much work."
             setTimeout(function() {
                 window.location = redirectUrl;
-            }, 100);
+            }, 3000);
         }, 200);
     }
 
@@ -200,10 +202,16 @@
         var searchInputTrueLeft = 0.55;
         var inputTrueWidth = 0.25;
 
+        var instrTrueTop = 0.15;
+        var instrTrueLeft = 0.17;
+        var instrTrueWidth = .4;
+        var instrTrueHeight = .15;
+
         var renderedImageHeight,
             renderedImageWidth,
             locationInputLeft,
-            descriptionInputLeft;
+            descriptionInputLeft,
+            instrLeft;
         if (viewportRatio > imageRatio) {
         	// page is too wide, image is cut off at the bottom
         	// => we can base left-right movement off of screen width %
@@ -211,8 +219,9 @@
         	renderedImageWidth = viewportWidth;
         	renderedImageHeight = (viewportWidth / imageFullWidth) * imageFullHeight;
 
-        	var descriptionInputLeft = cssPixels(descriptionInputTrueLeft * renderedImageWidth);
-        	var locationInputLeft = cssPixels(searchInputTrueLeft * renderedImageWidth);
+        	descriptionInputLeft = cssPixels(descriptionInputTrueLeft * renderedImageWidth);
+        	locationInputLeft = cssPixels(searchInputTrueLeft * renderedImageWidth);
+            instrLeft = cssPixels(instrTrueLeft * renderedImageWidth)
         } else {
          	// page is too skinny, image is cut off at the sides
         	// => we can base left-right movement off of image width %
@@ -222,17 +231,24 @@
 
         	var lengthOfHiddenImageMargin = (renderedImageWidth - viewportWidth) / 2;
 
-        	var descriptionInputLeft = cssPixels(
+        	descriptionInputLeft = cssPixels(
         		(renderedImageWidth * descriptionInputTrueLeft) - lengthOfHiddenImageMargin
         	);
-        	var locationInputLeft = cssPixels(
+        	locationInputLeft = cssPixels(
         		renderedImageWidth * searchInputTrueLeft - lengthOfHiddenImageMargin
         	);
+            instrLeft = cssPixels(
+                (renderedImageWidth * instrTrueLeft) - lengthOfHiddenImageMargin
+            );
         }
 
     	var inputWidth = cssPixels(inputTrueWidth * renderedImageWidth);
      	var inputTop = cssPixels(inputTrueTop * renderedImageHeight);
     	var inputHeight = cssPixels(inputTrueHeight * renderedImageHeight);
+
+        var instrTop = cssPixels(instrTrueTop * renderedImageHeight);
+        var instrHeight = cssPixels(instrTrueHeight * renderedImageHeight);
+        var instrWidth = cssPixels(instrTrueWidth * renderedImageWidth);
 
         var searchItem = document.getElementById('find_desc');
         searchItem.style.left = descriptionInputLeft;
@@ -245,6 +261,13 @@
         locItem.style.top = inputTop
         locItem.style.width = inputWidth;
         locItem.style.height = inputHeight;
+
+        var instrItem = document.getElementById('instructions');
+        instrItem.style.left = instrLeft;
+        instrItem.style.top = instrTop;
+        instrItem.style.width = instrWidth;
+        instrItem.style.height = instrHeight;
+        instrItem.value = "So I heard you need some ideas for where to go."
  
         var mouseItemY = .8;
  
@@ -262,6 +285,7 @@
             moveMouseVertical(-distanceY, verticalStepInterval, function onFinishMovingMouseVertical() {
                 animateTyping(inputElements, searchTerms);
             });
-        }, 1000);
+            instrItem.value = "Watch carefully. It's very complicated..."
+        }, 3000);
     });
 </script>
