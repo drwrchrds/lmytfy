@@ -86,6 +86,7 @@
 	margin: 0 auto;	
 }
 
+
 .quote-bottom-image {
 	position: absolute;
 	bottom: 230px;
@@ -95,13 +96,9 @@
 	margin-left: -200px;
 }
 
-.quote h2{
-	position: absolute;
-	bottom: 230px;
-	width: 400px;
+.quote center{
+	position: relative;
 	z-index: -1;
-	left: 50%;
-	margin-left: -100px;
 	color: #555; 
     font: bold 24px/45px Helvetica, Sans-Serif; 
     letter-spacing: -1px;
