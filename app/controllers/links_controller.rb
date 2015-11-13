@@ -26,7 +26,8 @@ class LinksController < ApplicationController
             redirect_to action: 'new'
         else
             # TODO @hwang change this to "render :show" to render the show page instead of redirecting right away
-            redirect_to "http://yelp.com/search?find_desc=#{@link.find_desc}&loc=#{@link.loc}"
+            # redirect_to "http://yelp.com/search?find_desc=#{@link.find_desc}&loc=#{@link.loc}"
+            render :show
         end
     end
 end

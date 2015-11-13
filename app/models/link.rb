@@ -11,4 +11,12 @@ class Link < ActiveRecord::Base
 
         self.slug = slug
     end
+
+    def redirect_url
+        URI::HTTP.build(
+            :host => "www.yelp.com", 
+            :path => '/search',
+            :query => { find_desc: self.find_desc, find_loc: self.loc }.to_query,
+        )
+    end
 end

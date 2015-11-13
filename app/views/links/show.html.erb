@@ -2,10 +2,187 @@ animation page go!
 
 <%# @hwang this is the show url page :) %>
 
-
+<!--
 <script>
 	$(function() {
 		var $searchBar = $(searchBar);
 		yelpit.animateSearchThing.init($searchBar);
 	});
+</script>
+-->
+<div id='background' style="background-image: url(<%= asset_url 'empty_home.png' %>);">
+    <div style="height:100%">
+        <input id="search_item">
+        <input id="loc_item">
+        <div id="mouse" class="cursor">
+            <img 
+                src="http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030" style="width:20px;height:20px;" 
+                id="mouse_image">
+        </div>
+    </div>
+</div>
+<script type='text/javascript'>
+    function get_yelp_img_size() {
+        var $background = $(background);
+        return [$background.width(), $background.height()]
+    }
+
+    function click_animation(search_desc, search_loc) {
+        var image = document.getElementById('mouse_image')
+        image.src = "https://cdn0.iconfinder.com/data/icons/rcons-basic/16/cursor-512.png"
+        console.log("<%= @link.redirect_url.to_s.html_safe %>")
+
+        setTimeout(function() {
+            image.src = "http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030"
+            setTimeout(function() {
+                window.location = "<%= @link.redirect_url.to_s.html_safe %>"
+            }, 100)
+        }, 200)
+    }
+
+    function move_mouse_horizontal(x_delta, wait, elements, terms) {
+        chrId = document.getElementById('mouse'),
+            chr = {
+                leftright: function () {
+                    var x = parseInt(getComputedStyle(chrId).left);
+                    if (x_delta < 0) {
+                        --x;
+                        --x;
+                    } else if (x_delta > 0) {
+                        ++x;
+                        ++x;
+                    }
+                    
+                    return x;
+                }
+            };
+
+        var moveLots = function (i) {
+            chrId.style.left = (chr.leftright()) + "px";
+            if (i < x_delta/2) {
+                setTimeout(function() {
+                    moveLots(i+1)
+                }, wait)   
+            } else {
+                console.log('done moving mouse')
+                setTimeout(function() {
+                    click_animation(terms[0], terms[1])
+                }, 300)
+            }
+        }
+        moveLots(0)
+    }
+
+    function type_search(elements, terms, rest_ele, rest_t) {
+        console.log('typing search')
+        var el = rest_ele[0]
+        var term = rest_t[0]
+        var search_item = document.getElementById(el);
+        function type(string,element){
+            (function writer(i){
+              if(string.length <= i++){
+                element.value = string;
+                if (rest_ele.length > 1) {
+                    var remain_ele = rest_ele.slice(1, rest_ele.length)
+                    var remain_t = rest_t.slice(1, rest_t.length)
+                    setTimeout(function() {
+                        type_search(elements, terms, remain_ele, remain_t)
+                    }, 500)
+                } else {
+                    var yelp_img_size = get_yelp_img_size()
+                    var desired_mouse_dest = .815
+
+                    mouse_item = document.getElementById('mouse')
+                    mouse_x = mouse_item.getBoundingClientRect().left;
+                    desired_x = yelp_img_size[0]*desired_mouse_dest
+
+                    move_amount = Math.round(desired_x - mouse_x)
+
+                    move_mouse_horizontal(move_amount, 1, elements, terms)
+                }
+                search_item.blur()
+                return
+              }
+              element.value = string.substring(0,i);
+              if( element.value[element.value.length-1] != " " )element.focus();
+              setTimeout(function(){writer(i);},100);
+            })(0)
+        }
+        type(term, search_item)
+    }
+
+    function move_vertical(amount, elements, terms) {
+        var chrId = document.getElementById('mouse');
+        var chr = {
+            updown: function () {
+                var y = parseInt(getComputedStyle(chrId).top);
+                if (amount < 0) {
+                    --y;
+                    --y;
+                } else {
+                    ++y;
+                    ++y;
+                }
+                return y;
+            },
+        };
+
+        var moveLots = function (i) {
+            chrId.style.top = (chr.updown()) + "px";
+            if (i < Math.abs(amount)/2.0) {
+                setTimeout(function() {
+                    moveLots(i+1)
+                }, 3)   
+            } else {
+                console.log('done moving mouse')
+                setTimeout(function() {
+                    type_search(elements, terms, elements, terms)
+                }, 500)
+            }
+        }
+        
+        moveLots(0)
+    }
+
+    $(function() {
+        console.log( "ready!" );
+        var elements = ['search_item', 'loc_item']
+        var terms = ["<%= @link.find_desc %>", "<%= @link.loc %>"]
+
+        var yelp_img_size = get_yelp_img_size()
+        var search_item_x = .26
+        var search_item_y = .022
+        var search_item_width = .23
+        var search_item_height = .022
+
+        search_item = document.getElementById('search_item')
+        search_item.style.left = Math.round(search_item_x*yelp_img_size[0]) + "px"
+        search_item.style.top = Math.round(search_item_y*yelp_img_size[1]) + "px"
+        search_item.style.width = Math.round(search_item_width*yelp_img_size[0]) + "px"
+        search_item.style.height = '25px'
+
+        var loc_item_x = .55
+        var loc_item_y = .022
+        var loc_item_width = .2
+        var loc_item_height = .022
+
+        loc_item = document.getElementById('loc_item')
+        loc_item.style.left = Math.round(loc_item_x*yelp_img_size[0]) + "px"
+        loc_item.style.top = Math.round(loc_item_y*yelp_img_size[1]) + "px"
+        loc_item.style.width = Math.round(loc_item_width*yelp_img_size[0]) + "px"
+        loc_item.style.height = '25px'
+
+        var mouse_item_y = .8
+
+        mouse_item = document.getElementById('mouse')
+        mouse_item.style.left = Math.round(search_item_x*yelp_img_size[0]) + "px"
+        mouse_item.style.top = Math.round(mouse_item_y*yelp_img_size[1]) + "px"
+
+        mouse_up_px = Math.round(
+            mouse_item_y*yelp_img_size[1] - search_item_y*yelp_img_size[1])*.96
+
+        setTimeout(function() {
+            move_vertical(-mouse_up_px, elements, terms)
+        }, 1000)
+    });
 </script>
