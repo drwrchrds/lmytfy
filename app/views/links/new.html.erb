@@ -16,17 +16,22 @@
 	</div>
 	<div class="section search-form">
 		<form id='shortUrlForm' >
-			<div class="search-input-box">
-				<span>
-					<label>Find:
-						<input type="text" name="find_desc" class="search-field-left">
-					</label>
-				</span>
-				<span>
-					<label>Near:
-						<input type="text" name="loc" class="search-field-right" value="San Francisco">
-					</label>
-				</span>
+			<div class="search-input-wrapper">
+
+				<div class="search-input-box" style="margin-right: -1px">
+					<span>
+						<label>Find:
+							<input type="text" name="find_desc" placeholder="Tacos, pupusas..." class="search-field-left">
+						</label>
+					</span>
+				</div>
+				<div class="search-input-box">
+					<span>
+						<label>Near:
+							<input type="text" name="loc" class="search-field-right" value="San Francisco">
+						</label>
+					</span>
+				</div>
 			</div>
 			<button class="btn yelp-button">Yelp It</button>
 		</form>

@@ -35,13 +35,17 @@
     text-align: center;
 }
 
-.search-input-box {
-	border: 1px solid #ccc;
+.search-input-wrapper {
 	margin-bottom: 30px;
 	background-color: #fff;
 	text-align: initial;
-	padding: 8px 10px;
 	display: table;
+}
+
+.search-input-box {
+	border: 1px solid #ccc;
+	padding: 8px 10px;
+	display: inline-block;
 }
 
 .search-form label {
@@ -59,12 +63,12 @@
 }
 
 .search-field-left {
-	width: 260px;	
+	width: 247px;	
 	/*border-right: 1px solid #ccc;*/
 }
 
 .search-field-right {
-	width: 210px;
+	width: 197px;
 }
 
 .yelp-button, .yelp-button:focus {
@@ -133,6 +137,8 @@
 	color: #555; 
     font-size: 20px;
 	padding: 0 50px;
+	font-weight: 300;
+	margin-top: -12px;
 }
 
 .darwin-bottom-image {
