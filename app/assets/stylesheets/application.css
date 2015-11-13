@@ -86,12 +86,11 @@
 	margin: 0 auto;	
 }
 
-
 .quote-bottom-image {
 	position: absolute;
 	bottom: 230px;
 	width: 400px;
-	z-index: -1;
+	z-index: -2;
 	left: 50%;
 	margin-left: -200px;
 }
@@ -100,8 +99,7 @@
 	position: relative;
 	z-index: -1;
 	color: #555; 
-    font: bold 24px/45px Helvetica, Sans-Serif; 
-    letter-spacing: -1px;
+    font-size: 26px; 
 }
 
 .darwin-bottom-image {
@@ -110,5 +108,5 @@
 	bottom: 0;
 	left: 50%;
 	margin-left: -120px;
-	z-index: -1;
+	z-index: -2;
 }
