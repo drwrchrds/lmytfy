@@ -31,11 +31,12 @@ animation page go!
         var image = document.getElementById('mouse_image')
         image.src = "https://cdn0.iconfinder.com/data/icons/rcons-basic/16/cursor-512.png"
         console.log("<%= @link.redirect_url.to_s.html_safe %>")
+
         setTimeout(function() {
             image.src = "http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030"
             setTimeout(function() {
                 window.location = "<%= @link.redirect_url.to_s.html_safe %>"
-            }, 100000)
+            }, 100)
         }, 200)
     }
 
