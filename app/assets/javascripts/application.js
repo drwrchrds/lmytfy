@@ -16,14 +16,6 @@
 //= require_tree .
 
 
-
-// function displayImages(){
-// 	var animate;
-// 	var num = Math.floor(Math.random() * (imagesArray.length+1)); 
-// 	animate = setTimeout(displayImages, 20); 
-// }
-
-
 var yelpit = {};
 
 yelpit.linkShortener = function($formEl, $showShortUrl, $goButton, $shortURLSection, createUrl) {
