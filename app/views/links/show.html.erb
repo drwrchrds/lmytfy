@@ -1,5 +1,3 @@
-animation page go!
-
 <%# @hwang this is the show url page :) %>
 
 <!--
@@ -12,177 +10,233 @@ animation page go!
 -->
 <div id='background' style="background-image: url(<%= asset_url 'empty_home.png' %>);">
     <div style="height:100%">
-        <input id="search_item">
-        <input id="loc_item">
+        <input id="find_desc">
+        <input id="find_loc">
         <div id="mouse" class="cursor">
             <img 
-                src="http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030" style="width:20px;height:20px;" 
+                src="http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030" 
+                width="20" 
+                height="20" 
                 id="mouse_image">
         </div>
     </div>
 </div>
+
 <script type='text/javascript'>
-    function get_yelp_img_size() {
-        var $background = $(background);
-        return [$background.width(), $background.height()]
+	var redirectUrl = "<%= @link.redirect_url.to_s.html_safe %>";
+	var findDesc = "<%= @link.find_desc %>";
+	var findLoc = "<%= @link.loc %>";
+	var searchTerms = [findDesc, findLoc];
+
+	var $mouse = $('#mouse');
+
+    function getViewportSize() {
+        var $viewport = $(background);
+        return [$viewport.width(), $viewport.height()];
     }
 
-    function click_animation(search_desc, search_loc) {
-        var image = document.getElementById('mouse_image')
-        image.src = "https://cdn0.iconfinder.com/data/icons/rcons-basic/16/cursor-512.png"
-        console.log("<%= @link.redirect_url.to_s.html_safe %>")
+    function animateClick() {
+        var image = document.getElementById('mouse_image');
+        image.src = "https://cdn0.iconfinder.com/data/icons/rcons-basic/16/cursor-512.png";
 
         setTimeout(function() {
-            image.src = "http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030"
+            image.src = "http://vignette4.wikia.nocookie.net/iwbtb/images/4/4c/Cursor.png/revision/latest?cb=20140813020030";
             setTimeout(function() {
-                window.location = "<%= @link.redirect_url.to_s.html_safe %>"
-            }, 100)
-        }, 200)
+                window.location = redirectUrl;
+            }, 100);
+        }, 200);
     }
 
-    function move_mouse_horizontal(x_delta, wait, elements, terms) {
-        chrId = document.getElementById('mouse'),
-            chr = {
-                leftright: function () {
-                    var x = parseInt(getComputedStyle(chrId).left);
-                    if (x_delta < 0) {
-                        --x;
-                        --x;
-                    } else if (x_delta > 0) {
-                        ++x;
-                        ++x;
-                    }
-                    
-                    return x;
-                }
-            };
+    function moveMouseHorizontal(deltaX, interval, onFinish) {
+    	var pixelsPerStep = 2;
+    	var steps = Math.abs(deltaX) / pixelsPerStep;
+        var mouseEl = document.getElementById('mouse');
 
-        var moveLots = function (i) {
-            chrId.style.left = (chr.leftright()) + "px";
-            if (i < x_delta/2) {
-                setTimeout(function() {
-                    moveLots(i+1)
-                }, wait)   
-            } else {
-                console.log('done moving mouse')
-                setTimeout(function() {
-                    click_animation(terms[0], terms[1])
-                }, 300)
+        var getNextPosition = function () {
+            var x = parseInt(mouseEl.style.left);
+
+            if (deltaX < 0) {
+            	x -= pixelsPerStep;
+            } else if (deltaX > 0) {
+            	x += pixelsPerStep;
             }
-        }
-        moveLots(0)
-    }
-
-    function type_search(elements, terms, rest_ele, rest_t) {
-        console.log('typing search')
-        var el = rest_ele[0]
-        var term = rest_t[0]
-        var search_item = document.getElementById(el);
-        function type(string,element){
-            (function writer(i){
-              if(string.length <= i++){
-                element.value = string;
-                if (rest_ele.length > 1) {
-                    var remain_ele = rest_ele.slice(1, rest_ele.length)
-                    var remain_t = rest_t.slice(1, rest_t.length)
-                    setTimeout(function() {
-                        type_search(elements, terms, remain_ele, remain_t)
-                    }, 500)
-                } else {
-                    var yelp_img_size = get_yelp_img_size()
-                    var desired_mouse_dest = .815
-
-                    mouse_item = document.getElementById('mouse')
-                    mouse_x = mouse_item.getBoundingClientRect().left;
-                    desired_x = yelp_img_size[0]*desired_mouse_dest
-
-                    move_amount = Math.round(desired_x - mouse_x)
-
-                    move_mouse_horizontal(move_amount, 1, elements, terms)
-                }
-                search_item.blur()
-                return
-              }
-              element.value = string.substring(0,i);
-              if( element.value[element.value.length-1] != " " )element.focus();
-              setTimeout(function(){writer(i);},100);
-            })(0)
-        }
-        type(term, search_item)
-    }
-
-    function move_vertical(amount, elements, terms) {
-        var chrId = document.getElementById('mouse');
-        var chr = {
-            updown: function () {
-                var y = parseInt(getComputedStyle(chrId).top);
-                if (amount < 0) {
-                    --y;
-                    --y;
-                } else {
-                    ++y;
-                    ++y;
-                }
-                return y;
-            },
+            
+            return x;
         };
 
-        var moveLots = function (i) {
-            chrId.style.top = (chr.updown()) + "px";
-            if (i < Math.abs(amount)/2.0) {
+        var step = function (i) { // was moveLots
+            mouseEl.style.left = cssPixels(getNextPosition());
+            if (i < steps) {
                 setTimeout(function() {
-                    moveLots(i+1)
-                }, 3)   
+                    step(i + 1);
+                }, interval);
             } else {
-                console.log('done moving mouse')
+                console.log('done moving mouse');
+                setTimeout(onFinish, 300);
+            }
+        };
+        step(0);
+    };
+
+    function moveMouseVertical(distanceY, interval, onFinish) {
+    	var pixelsPerStep = 2;
+    	var steps = Math.abs(distanceY) / pixelsPerStep;
+        var mouseEl = document.getElementById('mouse');
+
+        var getNextPosition = function () {
+            var y = parseInt(mouseEl.style.top);
+            if (distanceY < 0) {
+            	y -= pixelsPerStep;
+            } else {
+            	y += pixelsPerStep;
+            }
+            return y;
+        };
+
+        var step = function (i) { // was moveLots
+            mouseEl.style.top = cssPixels(getNextPosition());
+            if (i < steps) {
                 setTimeout(function() {
-                    type_search(elements, terms, elements, terms)
-                }, 500)
+                    step(i + 1);
+                }, interval);
+            } else {
+                console.log('done moving mouse');
+                setTimeout(onFinish, 500);
             }
         }
         
-        moveLots(0)
+        step(0);
+    }
+
+    function animateTyping(elements, terms) {
+        console.log('typing search');
+
+        var inputEl = elements.shift()
+        var term = terms.shift();
+
+        function type(string, element) {
+            function writer(i) {
+
+				if(string.length <= i++) {
+	                element.value = string;
+
+	                if (elements.length) {
+	                    setTimeout(function() {
+	                        animateTyping(elements, terms);
+	                    }, 500);
+	                } else {
+	                    var backgroundSize = getViewportSize();
+	                    var desiredMouseDest = .815;
+
+	                    var mouseItem = document.getElementById('mouse');
+	                    var mouseX = mouseItem.getBoundingClientRect().left;
+	                    var desiredX = backgroundSize[0] * desiredMouseDest;
+	                    var amountToMove = Math.round(desiredX - mouseX);
+
+	                    moveMouseHorizontal(amountToMove, 1, animateClick);
+	                }
+	                inputEl.blur();
+	                return
+				}
+
+				element.value = string.substring(0, i); // set element value
+				if (element.value[element.value.length - 1] != " ") element.focus();
+
+				setTimeout(function(){ 
+					writer(i); 
+				}, 100);
+            };
+
+            writer(0);
+        };
+        type(term, inputEl);
+    };
+
+    function cssPixels(number) {
+    	return number + 'px';
     }
 
     $(function() {
         console.log( "ready!" );
-        var elements = ['search_item', 'loc_item']
-        var terms = ["<%= @link.find_desc %>", "<%= @link.loc %>"]
+ 
+        var viewportSize = getViewportSize();
+        var viewportWidth = viewportSize[0];
+        var viewportHeight = viewportSize[1];
+        var viewportRatio = viewportWidth / viewportHeight;
 
-        var yelp_img_size = get_yelp_img_size()
-        var search_item_x = .26
-        var search_item_y = .022
-        var search_item_width = .23
-        var search_item_height = .022
+        var imageFullWidth = 2666;
+        var imageFullHeight = 1540;
+        var imageRatio = imageFullWidth / imageFullHeight;
 
-        search_item = document.getElementById('search_item')
-        search_item.style.left = Math.round(search_item_x*yelp_img_size[0]) + "px"
-        search_item.style.top = Math.round(search_item_y*yelp_img_size[1]) + "px"
-        search_item.style.width = Math.round(search_item_width*yelp_img_size[0]) + "px"
-        search_item.style.height = '25px'
+        // percentages correspond to positions of elements on background image
+        var inputTrueHeight = 0.03;
+        var inputTrueTop = 0.02;
+        var descriptionInputTrueLeft = 0.26;
+        var searchInputTrueLeft = 0.55;
+        var inputTrueWidth = 0.25;
 
-        var loc_item_x = .55
-        var loc_item_y = .022
-        var loc_item_width = .2
-        var loc_item_height = .022
+        var renderedImageHeight,
+            renderedImageWidth,
+            locationInputLeft,
+            descriptionInputLeft;
+        if (viewportRatio > imageRatio) {
+        	// page is too wide, image is cut off at the bottom
+        	// => we can base left-right movement off of screen width %
+        	// => we can base top-bottom movement off of top of screen % 
+        	renderedImageWidth = viewportWidth;
+        	renderedImageHeight = (viewportWidth / imageFullWidth) * imageFullHeight;
 
-        loc_item = document.getElementById('loc_item')
-        loc_item.style.left = Math.round(loc_item_x*yelp_img_size[0]) + "px"
-        loc_item.style.top = Math.round(loc_item_y*yelp_img_size[1]) + "px"
-        loc_item.style.width = Math.round(loc_item_width*yelp_img_size[0]) + "px"
-        loc_item.style.height = '25px'
+        	var descriptionInputLeft = cssPixels(descriptionInputTrueLeft * renderedImageWidth);
+        	var locationInputLeft = cssPixels(searchInputTrueLeft * renderedImageWidth);
+        } else {
+         	// page is too skinny, image is cut off at the sides
+        	// => we can base left-right movement off of image width %
+        	// => derive correct image width from image height       	renderedImageHeight = viewportHeight;
+        	renderedImageWidth = (viewportHeight / imageFullHeight) * imageFullWidth;
+        	renderedImageHeight = viewportHeight;
 
-        var mouse_item_y = .8
+        	var lengthOfHiddenImageMargin = (renderedImageWidth - viewportWidth) / 2;
 
-        mouse_item = document.getElementById('mouse')
-        mouse_item.style.left = Math.round(search_item_x*yelp_img_size[0]) + "px"
-        mouse_item.style.top = Math.round(mouse_item_y*yelp_img_size[1]) + "px"
+        	var descriptionInputLeft = cssPixels(
+        		(renderedImageWidth * descriptionInputTrueLeft) - lengthOfHiddenImageMargin
+        	);
+        	var locationInputLeft = cssPixels(
+        		renderedImageWidth * searchInputTrueLeft - lengthOfHiddenImageMargin
+        	);
+        }
 
-        mouse_up_px = Math.round(
-            mouse_item_y*yelp_img_size[1] - search_item_y*yelp_img_size[1])*.96
+    	var inputWidth = cssPixels(inputTrueWidth * renderedImageWidth);
+     	var inputTop = cssPixels(inputTrueTop * renderedImageHeight);
+    	var inputHeight = cssPixels(inputTrueHeight * renderedImageHeight);
+
+        var searchItem = document.getElementById('find_desc');
+        searchItem.style.left = descriptionInputLeft;
+        searchItem.style.top = inputTop
+        searchItem.style.width = inputWidth;
+        searchItem.style.height = inputHeight;
+ 
+        var locItem = document.getElementById('find_loc');
+        locItem.style.left = locationInputLeft;
+        locItem.style.top = inputTop
+        locItem.style.width = inputWidth;
+        locItem.style.height = inputHeight;
+ 
+        var mouseItemY = .8;
+ 
+        var mouseItem = document.getElementById('mouse');
+        mouseItem.style.left = descriptionInputLeft;
+        mouseItem.style.top = cssPixels(Math.round(mouseItemY * viewportHeight));
+ 
+        var distanceY = Math.round(
+            (mouseItemY * viewportHeight) - (inputTrueTop * viewportHeight)
+        ) * .96;
+ 		var verticalStepInterval = 1;
+ 		var inputElements = [searchItem, locItem];
 
         setTimeout(function() {
-            move_vertical(-mouse_up_px, elements, terms)
-        }, 1000)
+            moveMouseVertical(-distanceY, verticalStepInterval, function onFinishMovingMouseVertical() {
+                animateTyping(inputElements, searchTerms);
+            });
+        }, 1000);
     });
 </script>
