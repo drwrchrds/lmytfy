@@ -9,7 +9,6 @@
 			</div>
 		<% end %>
 	</div>
-
 	<div class="logo">
 		<img src="<%= asset_path 'logo_lmyi4u_2.png'%>" alt="logo" class="center-block">
 	</div>
@@ -25,7 +24,6 @@
 			<button class="btn yelp-button">Yelp it</button>
 		</form>
 	</div>
-
 	<div class="section show-short-url" id="shortURLSection">
 		<label>Here is your link:
 			<input 
@@ -36,11 +34,13 @@
 		</label>
 		<a id="goButton" class="go-button btn btn-primary yelp-button" href="#">Go!</a>
 	</div>
-	
-	<div class="quote">
-		<img src="<%= asset_path 'quotes.png'%>" alt="quote" class="quote-bottom-image">
+	<div id= "quote-element" class="quote">
+		<img 
+			src="<%= asset_path 'quotes2.png'%>" 
+			alt="quote" 
+			class="quote-bottom-image"
+		>
 	</div>	
-
 	<div class="darwin">
 		<img src="<%= asset_path 'darwin_create.png'%>" alt="darwin" class="darwin-bottom-image">
 	</div>
@@ -55,4 +55,22 @@
 		var $shortURLSection = $(shortURLSection);
 		yelpit.linkShortener.init($shortUrlForm, $showShortUrl, $goButton, $shortURLSection);
 	});
+</script>
+
+<script type="text/javascript">
+    var images = [
+	    "<%= asset_path 'quotes.png'%>", 
+	    "<%= asset_path 'quotes2.png'%>"
+    ];
+
+    $(function() {
+    	var quoteImg = $('.quote-bottom-image');
+    	var interval = setInterval(function() {
+    		var nextImage = images.shift();
+
+    		quoteImg.attr('src', nextImage);
+
+    		images.push(nextImage);
+    	}, 1000);
+    });
 </script>

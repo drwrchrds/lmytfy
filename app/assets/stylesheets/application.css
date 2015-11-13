@@ -49,13 +49,15 @@
 
 .show-short-url {
 	display: none;
-	margin: 0 auto;	
+	margin: 0 auto;
+	width: 400px;	
 }
 
 .quote-bottom-image {
 	position: absolute;
 	bottom: 0;
 	margin-bottom: 250px;
+	width:400;
 	z-index: -1;
 }
 
