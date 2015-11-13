@@ -18,16 +18,17 @@
 
 var yelpit = {};
 
-yelpit.linkShortener = function($formEl, $showShortUrl, $goButton, createUrl) {
+yelpit.linkShortener = function($formEl, $showShortUrl, $goButton, $shortURLSection, createUrl) {
 	this.$formEl = $formEl;
 	this.$showShortUrl = $showShortUrl;
 	this.$goButton = $goButton;
+	this.$shortURLSection = $shortURLSection;
 	this.createUrl = createUrl;
 
 	this.$formEl.on('submit', this.submitForm.bind(this));
 	this.$showShortUrl.on('change', function(e) {
 		e.preventDefault();
-	})
+	});
 };
 
 yelpit.linkShortener.prototype.submitForm = function(event) {
@@ -53,13 +54,12 @@ yelpit.linkShortener.prototype.handleAjaxFail = function(response) {
 
 yelpit.linkShortener.prototype.handleAjaxDone = function(response) {
 	this.$showShortUrl.val(response.short_url)
-	this.$showShortUrl.attr('disabled', false);
 	this.$goButton.attr('href', response.short_url);
-	this.$goButton.show();
+	this.$shortURLSection.show();
 };
 
-yelpit.linkShortener.init = function($formEl, $showShortUrl, $goButton) {
-	new yelpit.linkShortener($formEl, $showShortUrl, $goButton, '/create');
+yelpit.linkShortener.init = function($formEl, $showShortUrl, $goButton, $shortUrlSection) {
+	new yelpit.linkShortener($formEl, $showShortUrl, $goButton, $shortUrlSection, '/create');
 };
 
 // TODO add JS modules in this file :)
