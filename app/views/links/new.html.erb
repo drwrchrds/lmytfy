@@ -1,9 +1,6 @@
 
 <%# TODO @fzz this is the new url page :) %>
 
-
-<link rel="icon" href="<%= asset_path 'favicon.ico'%>" type="image/x-icon"/>
-
 <div class="content">
 	<div class="section section--alert">
 		<% if flash[:error] %>
@@ -80,9 +77,12 @@
     $(function() {
     	var quoteH2Element = document.getElementById("text-h2");
     	var interval = setInterval(function() {
+    		// $(quoteH2Element).fadeOut(500);
     		var newQuote = quotes.shift();
     		quoteH2Element.innerHTML = newQuote;
     		quotes.push(newQuote);
-    	}, 1000);
+    		$(quoteH2Element).hide();
+    		$(quoteH2Element).fadeIn(1000);
+    	}, 2300);
     });
 </script>
