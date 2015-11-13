@@ -160,6 +160,7 @@
 	                    var mouseX = mouseItem.getBoundingClientRect().left;
 	                    var amountToMove = Math.round(desiredX - mouseX);
 
+                        document.getElementById('instructions').value = "Trickiest part: don't forget to press the search button."
 	                    moveMouseHorizontal(amountToMove, 1, animateClick);
 	                }
 	                inputEl.blur();
