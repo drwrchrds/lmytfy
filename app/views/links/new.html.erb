@@ -11,17 +11,24 @@
 	</div>
 
 	<div class="logo">
-		<img src="<%= asset_path 'logo_lmyi4u_2.png'%>" alt="logo" class="center-block">
+		Let me 
+		<img class="logo-img" src="<%= asset_path 'logo.png'%>" alt="logo" class="center-block"> 
+		it for you!
 	</div>
 	<div class="section search-form">
 		<form id='shortUrlForm' >
-			<label>Find
-				<input type="text" name="find_desc" placeholder="you got one lazy friend...">
-			</label>
-			
-			<label>Near
-				<input type="text" name="loc" placeholder="I'm sorry :(">
-			</label>
+			<div class="search-input-box">
+				<span>
+					<label>Find:
+						<input type="text" name="find_desc" class="search-field-left">
+					</label>
+				</span>
+				<span>
+					<label>Near:
+						<input type="text" name="loc" class="search-field-right">
+					</label>
+				</span>
+			</div>
 			<button class="btn yelp-button">Yelp it</button>
 		</form>
 	</div>
